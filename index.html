@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KleinTrack Lite - System Proposal</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm 20mm;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            font-size: 12pt;
+        }
+        
+        .page-container {
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            min-height: 280mm;
+        }
+        
+        .export-controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .export-btn {
+            padding: 8px 15px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: background 0.3s;
+            text-align: center;
+        }
+        
+        .export-btn:hover {
+            background: #1a252f;
+        }
+        
+        .export-btn.pdf {
+            background: #e74c3c;
+        }
+        
+        .export-btn.pdf:hover {
+            background: #c0392b;
+        }
+        
+        .export-btn.word {
+            background: #3498db;
+        }
+        
+        .export-btn.word:hover {
+            background: #2980b9;
+        }
+        
+        .export-btn.ppt {
+            background: #f39c12;
+        }
+        
+        .export-btn.ppt:hover {
+            background: #d68910;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2c3e50;
+        }
+        
+        .proposal-title {
+            color: #2c3e50;
+            font-size: 28px;
+            font-weight: bold;
+            margin: 5px 0 3px 0;
+        }
+        
+        .proposal-subtitle {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin: 3px 0;
+        }
+        
+        .client-info {
+            background: linear-gradient(to right, #f8f9fa, #e9ecef);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .info-item {
+            padding: 3px 0;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 2px;
+        }
+        
+        .info-value {
+            color: #2c3e50;
+            display: block;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            font-size: 20px;
+            margin: 25px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #3498db;
+            page-break-after: avoid;
+        }
+        
+        h2 {
+            color: #3498db;
+            font-size: 17px;
+            margin: 20px 0 12px 0;
+            page-break-after: avoid;
+        }
+        
+        h3 {
+            color: #555;
+            font-size: 15px;
+            margin: 15px 0 8px 0;
+        }
+        
+        p {
+            margin: 10px 0;
+            text-align: justify;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 11pt;
+            page-break-inside: avoid;
+        }
+        
+        th {
+            background-color: #2c3e50;
+            color: white;
+            font-weight: bold;
+            padding: 10px 8px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(to right, #fff8e1, #ffecb3);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 5px solid #ffc107;
+            page-break-inside: avoid;
+        }
+        
+        .financial-box {
+            background: linear-gradient(to right, #e8f5e9, #c8e6c9);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 5px solid #4caf50;
+            page-break-inside: avoid;
+        }
+        
+        .feature-box {
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
+            padding: 12px;
+            margin: 12px 0;
+            border-radius: 6px;
+            border-left: 4px solid #2196f3;
+            page-break-inside: avoid;
+        }
+        
+        .signature-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: #f8f9fa;
+            page-break-inside: avoid;
+        }
+        
+        .signature-box {
+            display: inline-block;
+            width: 48%;
+            vertical-align: top;
+            margin-top: 15px;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 10pt;
+            color: #666;
+            page-break-before: avoid;
+        }
+        
+        ul, ol {
+            margin: 10px 0 10px 20px;
+        }
+        
+        li {
+            margin: 6px 0;
+        }
+        
+        .page-break {
+            page-break-before: always;
+        }
+        
+        .avoid-page-break {
+            page-break-inside: avoid;
+            page-break-before: avoid;
+        }
+        
+        .force-page-break {
+            page-break-before: always;
+            page-break-inside: avoid;
+        }
+        
+        /* Simple chart visualization using pure CSS - will work in PDF */
+        .simple-chart {
+            margin: 15px 0;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            page-break-inside: avoid;
+        }
+        
+        .chart-row {
+            display: flex;
+            align-items: center;
+            margin: 12px 0;
+            gap: 10px;
+        }
+        
+        .chart-label {
+            width: 180px;
+            font-size: 13px;
+            color: #2c3e50;
+            text-align: right;
+            flex-shrink: 0;
+        }
+        
+        .chart-bar-container {
+            flex: 1;
+            height: 25px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            min-width: 100px;
+        }
+        
+        .chart-bar {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .chart-value {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 12px;
+            z-index: 2;
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+        }
+        
+        /* Chart colors */
+        .bar-blue { background: #3498db; }
+        .bar-green { background: #2ecc71; }
+        .bar-red { background: #e74c3c; }
+        .bar-orange { background: #f39c12; }
+        .bar-purple { background: #9b59b6; }
+        .bar-teal { background: #1abc9c; }
+        .bar-dark-blue { background: #2980b9; }
+        
+        /* Comparison boxes */
+        .comparison-box {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            gap: 15px;
+            page-break-inside: avoid;
+        }
+        
+        .comparison-item {
+            flex: 1;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .comparison-current {
+            background: #ffebee;
+            border: 2px solid #e74c3c;
+        }
+        
+        .comparison-future {
+            background: #e8f5e9;
+            border: 2px solid #2ecc71;
+        }
+        
+        .comparison-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 8px 0;
+        }
+        
+        .comparison-label {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        /* Revenue loss breakdown */
+        .revenue-loss-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .revenue-loss-item {
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .loss-title {
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .loss-amount {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 8px 0;
+        }
+        
+        /* Print optimization */
+        @media print {
+            body {
+                font-size: 11pt;
+                line-height: 1.4;
+            }
+            
+            .page-container {
+                padding: 10mm 15mm;
+                max-width: 100%;
+                min-height: auto;
+            }
+            
+            .export-controls {
+                display: none !important;
+            }
+            
+            .header {
+                margin-top: 0;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+            }
+            
+            .proposal-title {
+                font-size: 24px;
+            }
+            
+            table {
+                font-size: 10pt;
+                margin: 12px 0;
+            }
+            
+            th, td {
+                padding: 6px 5px;
+            }
+            
+            h1 {
+                margin-top: 25px;
+                margin-bottom: 12px;
+                font-size: 18px;
+            }
+            
+            h2 {
+                margin-top: 20px;
+                margin-bottom: 10px;
+                font-size: 16px;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+            
+            .avoid-page-break {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            .force-page-break {
+                page-break-before: always;
+                break-before: page;
+            }
+            
+            /* Prevent orphaned elements */
+            p, ul, ol, .highlight-box, .financial-box, .feature-box, .comparison-box, .revenue-loss-grid {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+            
+            /* Keep headings with content */
+            h1, h2, h3 {
+                page-break-after: avoid;
+                break-after: avoid;
+            }
+            
+            /* Add minimal space at page bottom */
+            .footer {
+                margin-top: 20px;
+                padding-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="export-controls no-print">
+        <button class="export-btn pdf" onclick="showPDFInstructions()">📥 PDF</button>
+        <button class="export-btn word" onclick="exportToWord()">📥 Word</button>
+        <button class="export-btn ppt" onclick="exportToPowerPoint()">📊 PowerPoint</button>
+        <button class="export-btn" onclick="printProposal()">🖨️ Print</button>
+    </div>
+    
+    <div class="page-container">
+        <div class="header">
+            <div class="proposal-title">KLEINTRACK LITE - SYSTEM PROPOSAL</div>
+            <div class="proposal-subtitle">Digital Management System for Small Retail</div>
+            <div>Prepared for: Kleinberg Accommodation</div>
+            <div>Proposal Date: January 2026 | Reference: KTL-2026-001</div>
+        </div>
+        
+        <div class="client-info">
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">Client:</span>
+                    <span class="info-value">Kleinberg Accommodation</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Location:</span>
+                    <span class="info-value">R27, Langebaan, West Coast 7357</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Contact:</span>
+                    <span class="info-value">Shop Manager/Owner</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Prepared by:</span>
+                    <span class="info-value">Peter Okerinola</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Based on:</span>
+                    <span class="info-value">Onsite research & analysis</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Specialization:</span>
+                    <span class="info-value">Retail Software Development</span>
+                </div>
+            </div>
+        </div>
+        
+        <h1>1. EXECUTIVE SUMMARY</h1>
+        
+        <p><strong>From firsthand observation at your Langebaan shop:</strong> After analyzing your daily operations, I've identified that Kleinberg Accommodation is currently losing approximately <strong>R148,987 annually</strong> due to multiple inefficiencies beyond just credit management.</p>
+        
+        <div class="highlight-box avoid-page-break">
+            <h3>🚀 The Shop's Critical Role in Guest Experience</h3>
+            <p><strong>Important Insight:</strong> Your shop is an essential part of the accommodation experience. Guests staying at Kleinberg Accommodation expect to get their essential needs from your shop. When they can't find what they need due to:</p>
+            <ul>
+                <li>Stock-outs of popular items</li>
+                <li>Inaccurate pricing information</li>
+            </ul>
+            <p>...they may shorten their stay, affecting both shop revenue AND accommodation revenue. This system protects your overall business ecosystem.</p>
+        </div>
+        
+        <div class="financial-box avoid-page-break">
+            <h3>💰 Immediate Business Improvement</h3>
+            <p><strong>Total Software Investment:</strong> R30,000 (including VAT)</p>
+            <p><strong>Annual Recovery:</strong> R99,180 (starting from Month 8)</p>
+            <p><strong>Payback Period:</strong> 3.6 months (software only)</p>
+            <p><strong>Annual ROI:</strong> 330%</p>
+            <p><strong>Key Insight:</strong> Every R1 invested returns R4.30 within the first year</p>
+        </div>
+        
+        <div class="force-page-break"></div>
+        
+        <h1>2. COMPREHENSIVE REVENUE LOSS ANALYSIS</h1>
+        
+        <h2>2.1 Multiple Sources of Revenue Loss</h2>
+        
+        <div class="revenue-loss-grid avoid-page-break">
+            <div class="revenue-loss-item">
+                <div class="loss-title">1. Credit Loss from Customers</div>
+                <div class="loss-amount">R55,987/year</div>
+                <p>25% of sales on credit, 60% never recovered. Farm workers forget amounts, no proper tracking.</p>
+            </div>
+            
+            <div class="revenue-loss-item">
+                <div class="loss-title">2. Price Discrepancy Loss</div>
+                <div class="loss-amount">R18,000/year</div>
+                <p>Manual price checking leads to misquotes, undercharging, and customer disputes.</p>
+            </div>
+            
+            <div class="revenue-loss-item">
+                <div class="loss-title">3. Theft & Shrinkage</div>
+                <div class="loss-amount">R24,000/year</div>
+                <p>No proper inventory tracking enables theft by staff and customers.</p>
+            </div>
+            
+            <div class="revenue-loss-item">
+                <div class="loss-title">4. Stock-out Sales Loss</div>
+                <div class="loss-amount">R27,000/year</div>
+                <p>Running out of beer and essentials during peak hours = immediate lost sales.</p>
+            </div>
+            
+            <div class="revenue-loss-item">
+                <div class="loss-title">5. Return Items Mismanagement</div>
+                <div class="loss-amount">R9,000/year</div>
+                <p>Returns not properly documented lead to double losses.</p>
+            </div>
+            
+            <div class="revenue-loss-item">
+                <div class="loss-title">6. Inefficient Stock Management</div>
+                <div class="loss-amount">R15,000/year</div>
+                <p>Overstocking perishables, understocking fast movers = capital tied up.</p>
+            </div>
+        </div>
+        
+        <div class="simple-chart avoid-page-break">
+            <div class="chart-row">
+                <div class="chart-label">Total Annual Revenue Loss</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar bar-red" style="width: 100%;">
+                        <div class="chart-value">R148,987</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-row">
+                <div class="chart-label">Credit Loss (37.6%)</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar bar-red" style="width: 37.6%;">
+                        <div class="chart-value">R55,987</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-row">
+                <div class="chart-label">Price Errors (12.1%)</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar bar-orange" style="width: 12.1%;">
+                        <div class="chart-value">R18,000</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-row">
+                <div class="chart-label">Theft & Shrinkage (16.1%)</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar bar-purple" style="width: 16.1%;">
+                        <div class="chart-value">R24,000</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-row">
+                <div class="chart-label">Stock-outs (18.1%)</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar bar-teal" style="width: 18.1%;">
+                        <div class="chart-value">R27,000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="force-page-break"></div>
+        
+        <h2>2.2 System Impact Comparison</h2>
+        
+        <div class="comparison-box avoid-page-break">
+            <div class="comparison-item comparison-current">
+                <h3>Current Annual Loss</h3>
+                <div class="comparison-value">R148,987</div>
+                <div class="comparison-label">Total Revenue Loss</div>
+                <div style="margin-top: 12px; font-size: 13px;">
+                    <p>• 37.6% from credit losses</p>
+                    <p>• 30.2% from operational losses</p>
+                    <p>• Manual systems only</p>
+                    <p>• No visibility or control</p>
+                </div>
+            </div>
+            
+            <div class="comparison-item comparison-future">
+                <h3>With KleinTrack Lite</h3>
+                <div class="comparison-value">R49,807</div>
+                <div class="comparison-label">Projected Annual Loss</div>
+                <div style="margin-top: 12px; font-size: 13px;">
+                    <p>• 66.6% reduction in losses</p>
+                    <p>• Digital tracking system</p>
+                    <p>• Automated controls</p>
+                    <p>• Real-time visibility</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>2.3 Financial Improvements</h2>
+        
+        <table class="avoid-page-break">
+            <tr>
+                <th>Financial Metric</th>
+                <th>Current</th>
+                <th>With System</th>
+                <th>Improvement</th>
+            </tr>
+            <tr>
+                <td>Annual Revenue Loss</td>
+                <td>R148,987</td>
+                <td>R49,807</td>
+                <td>66.6% reduction</td>
+            </tr>
+            <tr>
+                <td>Monthly Working Capital</td>
+                <td>R52,877</td>
+                <td>R62,972</td>
+                <td>+19.1%</td>
+            </tr>
+            <tr>
+                <td>Annual Reinvestable Capital</td>
+                <td>R634,524</td>
+                <td>R733,704</td>
+                <td>+R99,180</td>
+            </tr>
+            <tr>
+                <td>Annual Revenue</td>
+                <td>R746,496</td>
+                <td>R845,676</td>
+                <td>+13.3%</td>
+            </tr>
+        </table>
+        
+        <div class="force-page-break"></div>
+        
+        <h1>3. REVENUE GROWTH PROJECTION</h1>
+        
+        <div class="simple-chart avoid-page-break">
+            <div class="chart-row">
+                <div class="chart-label">Current Annual Revenue</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar bar-blue" style="width: 88.3%;">
+                        <div class="chart-value">R746,496</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-row">
+                <div class="chart-label">Year 1 with System (13.3% growth)</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar bar-green" style="width: 100%;">
+                        <div class="chart-value">R845,676</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-row">
+                <div class="chart-label">Year 2 with System (26.6% growth)</div>
+                <div class="chart-bar-container">
+                    <div class="chart-bar bar-purple" style="width: 111.7%;">
+                        <div class="chart-value">R945,016</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-box avoid-page-break">
+            <p><strong>Growth Components:</strong></p>
+            <ul>
+                <li><strong>Credit Recovery:</strong> R33,592 (50% of R55,987)</li>
+                <li><strong>Price Error Elimination:</strong> R14,400 (80% of R18,000)</li>
+                <li><strong>Theft Reduction:</strong> R14,400 (60% of R24,000)</li>
+                <li><strong>Stock-out Elimination:</strong> R21,600 (80% of R27,000)</li>
+                <li><strong>Return Management:</strong> R6,300 (70% of R9,000)</li>
+                <li><strong>Stock Efficiency:</strong> R9,000 (60% of R15,000)</li>
+                <li><strong>Efficiency Gains:</strong> R18,000 (staff time savings)</li>
+            </ul>
+            <p><strong>Total Annual Recovery:</strong> R99,180 (from Month 8 onward)</p>
+        </div>
+        
+        <div class="force-page-break"></div>
+        
+        <h1>4. SOFTWARE INVESTMENT DETAILS</h1>
+        
+        <h2>4.1 Software Development (Simplified Pricing)</h2>
+        
+        <div class="financial-box avoid-page-break">
+            <h3>💰 All-in-One Software Package: R26,086.96 + VAT</h3>
+            <p><strong>Includes:</strong></p>
+            <ul>
+                <li>Complete inventory management system</li>
+                <li>Point of Sale (POS) with receipt printing</li>
+                <li>Custom credit management for farm workers</li>
+                <li>Business reports and dashboard</li>
+                <li>On-site installation and setup</li>
+                <li>3 months of support and bug fixes</li>
+                <li>User training for all staff</li>
+            </ul>
+        </div>
+        
+        <h2>4.2 Hardware Requirements (Optional)</h2>
+        
+        <div class="feature-box avoid-page-break">
+            <h3>💡 Flexible Hardware Options</h3>
+            <p><strong>Option 1:</strong> Use existing Windows PC or laptop (No extra cost)</p>
+            <p><strong>Option 2:</strong> Dedicated Raspberry Pi system for reliability</p>
+        </div>
+        
+        <table class="avoid-page-break">
+            <tr>
+                <th>Item</th>
+                <th>Specification</th>
+                <th>Cost (R)</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>Raspberry Pi 4 Kit</td>
+                <td>4GB with case & power supply</td>
+                <td>1,689.90</td>
+                <td>Optional</td>
+            </tr>
+            <tr>
+                <td>7" Touch Display</td>
+                <td>Official Raspberry Pi display</td>
+                <td>1,289.00</td>
+                <td>Optional</td>
+            </tr>
+            <tr>
+                <td>Thermal Printer</td>
+                <td>Xprinter XP-58IIT</td>
+                <td>500.00</td>
+                <td>Recommended</td>
+            </tr>
+            <tr>
+                <td>Barcode Scanner</td>
+                <td>USB scanner</td>
+                <td>350.00</td>
+                <td>Recommended</td>
+            </tr>
+            <tr>
+                <td>Display Frame & Stand</td>
+                <td>Acrylic protection</td>
+                <td>179.89</td>
+                <td>Optional</td>
+            </tr>
+            <tr>
+                <td>Keyboard & Mouse</td>
+                <td>Wireless set</td>
+                <td>500.00</td>
+                <td>Optional (use existing)</td>
+            </tr>
+            <tr>
+                <td>10,000mAh Power Bank</td>
+                <td>Load shedding backup</td>
+                <td>350.00</td>
+                <td>Recommended</td>
+            </tr>
+            <tr>
+                <td>Cables & Accessories</td>
+                <td>All necessary cables</td>
+                <td>250.00</td>
+                <td>Included in setup</td>
+            </tr>
+            <tr>
+                <td>Transportation & Shipping</td>
+                <td>Delivery to Langebaan</td>
+                <td>350.00</td>
+                <td>Included</td>
+            </tr>
+            <tr>
+                <td><strong>Hardware Total (if purchased)</strong></td>
+                <td></td>
+                <td><strong>5,718.79</strong></td>
+                <td><strong>Optional Package</strong></td>
+            </tr>
+        </table>
+        
+        <div class="financial-box avoid-page-break">
+            <h3>💰 Total Investment Summary (Software Only)</h3>
+            <table style="margin: 0;">
+                <tr>
+                    <td><strong>Software Package:</strong></td>
+                    <td>R26,086.96</td>
+                </tr>
+                <tr>
+                    <td><strong>VAT (15%):</strong></td>
+                    <td>R3,913.04</td>
+                </tr>
+                <tr style="border-top: 2px solid #2c3e50;">
+                    <td><strong>TOTAL SOFTWARE:</strong></td>
+                    <td><strong>R30,000.00</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>Optional Hardware:</strong></td>
+                    <td>R5,718.79</td>
+                </tr>
+                <tr style="background: #2c3e50; color: white;">
+                    <td><strong>TOTAL WITH HARDWARE:</strong></td>
+                    <td><strong>R35,718.79</strong></td>
+                </tr>
+            </table>
+            <p style="margin-top: 10px;"><em>Note: Software can run on existing Windows PC. Hardware is optional for dedicated system.</em></p>
+        </div>
+        
+        <div class="force-page-break"></div>
+        
+        <h1>5. WHY KLEINTRACK LITE BEATS READY-MADE POS SYSTEMS</h1>
+        
+        <div class="highlight-box avoid-page-break">
+            <h3>🚀 Built Specifically for Kleinberg Accommodation</h3>
+            <p><strong>Generic POS vs. Custom Solution:</strong> Ready-made systems are designed for thousands of businesses. KleinTrack Lite is designed for ONE business: yours.</p>
+            <ul>
+                <li><strong>Credit System</strong> understands farm workers get paid monthly, not weekly</li>
+                <li><strong>Beer Inventory</strong> knows you sell 3 crates weekdays, 5 on weekends</li>
+                <li><strong>Manual Process Integration</strong> - we build around your workflow</li>
+                <li><strong>Local Support</strong> - I'm in Langebaan, not a call center in Johannesburg</li>
+            </ul>
+        </div>
+        
+        <div class="comparison-box avoid-page-break">
+            <div class="comparison-item comparison-current">
+                <h3>Generic POS Systems</h3>
+                <div class="comparison-value">R200-500/month</div>
+                <div class="comparison-label">Ongoing Cost Forever</div>
+                <div style="margin-top: 12px; font-size: 13px;">
+                    <p>• Monthly fees increase yearly</p>
+                    <p>• Hardware rental fees</p>
+                    <p>• Internet required</p>
+                    <p>• No farm worker credit system</p>
+                    <p>• Call center support</p>
+                    <p>• Your data on their servers</p>
+                </div>
+            </div>
+            
+            <div class="comparison-item comparison-future">
+                <h3>KleinTrack Lite</h3>
+                <div class="comparison-value">One-time Investment</div>
+                <div class="comparison-label">R30,000 Total</div>
+                <div style="margin-top: 12px; font-size: 13px;">
+                    <p>• No monthly fees EVER</p>
+                    <p>• You own all software</p>
+                    <p>• Works offline</p>
+                    <p>• Custom credit management</p>
+                    <p>• Local Langebaan support</p>
+                    <p>• Your data stays with you</p>
+                </div>
+            </div>
+        </div>
+        
+        <h2>5.1 5-Year Total Cost Comparison</h2>
+        
+        <table class="avoid-page-break">
+            <tr>
+                <th>System Type</th>
+                <th>Year 1</th>
+                <th>Year 2</th>
+                <th>Year 3</th>
+                <th>Year 4</th>
+                <th>Year 5</th>
+                <th>5-Year Total</th>
+            </tr>
+            <tr>
+                <td><strong>Generic POS</strong><br>(R300/month + R100 hardware)</td>
+                <td>R4,800</td>
+                <td>R5,280 (+10%)</td>
+                <td>R5,808 (+10%)</td>
+                <td>R6,389 (+10%)</td>
+                <td>R7,028 (+10%)</td>
+                <td><strong>R29,305</strong></td>
+            </tr>
+            <tr>
+                <td><strong>Premium POS</strong><br>(R500/month + R200 hardware)</td>
+                <td>R8,400</td>
+                <td>R9,240 (+10%)</td>
+                <td>R10,164 (+10%)</td>
+                <td>R11,180 (+10%)</td>
+                <td>R12,298 (+10%)</td>
+                <td><strong>R51,282</strong></td>
+            </tr>
+            <tr style="background: #e8f5e9;">
+                <td><strong>KleinTrack Lite</strong></td>
+                <td><strong>R30,000</strong></td>
+                <td><strong>R0</strong></td>
+                <td><strong>R0</strong></td>
+                <td><strong>R0</strong></td>
+                <td><strong>R0</strong></td>
+                <td><strong>R30,000</strong></td>
+            </tr>
+        </table>
+        
+        <div class="feature-box avoid-page-break">
+            <h3>💰 Financial Reality Check</h3>
+            <p><strong>Generic POS over 5 years:</strong> R29,305-R51,282 spent with NOTHING to show for it</p>
+            <p><strong>KleinTrack Lite after 5 years:</strong> You OWN a complete system worth R30,000 that continues saving you R99,180/year</p>
+            <p><strong>Net Position after 5 years:</strong></p>
+            <ul>
+                <li>Generic POS: -R29,305 spent, no assets</li>
+                <li>KleinTrack Lite: System worth R30,000 + R495,900 saved (R99,180 × 5 years)</li>
+            </ul>
+        </div>
+        
+        <div class="force-page-break"></div>
+        
+        <h1>6. PAYMENT SCHEDULE & TIMELINE</h1>
+        
+        <h2>6.1 Simplified Payment Schedule</h2>
+        
+        <table class="avoid-page-break">
+            <tr>
+                <th>Milestone</th>
+                <th>Percentage</th>
+                <th>Amount (R)</th>
+                <th>Trigger</th>
+            </tr>
+            <tr>
+                <td>Project Start</td>
+                <td>50%</td>
+                <td>15,000.00</td>
+                <td>Agreement signing</td>
+            </tr>
+            <tr>
+                <td>System Demo</td>
+                <td>30%</td>
+                <td>9,000.00</td>
+                <td>Working system demo</td>
+            </tr>
+            <tr>
+                <td>Project Completion</td>
+                <td>20%</td>
+                <td>6,000.00</td>
+                <td>System go-live & acceptance</td>
+            </tr>
+            <tr style="background: #f8f9fa;">
+                <td><strong>Total Software</strong></td>
+                <td><strong>100%</strong></td>
+                <td><strong>30,000.00</strong></td>
+                <td></td>
+            </tr>
+        </table>
+        
+        <p><em>Note: Hardware can be purchased separately as needed. Software runs on existing Windows PC.</em></p>
+        
+        <h2>6.2 Implementation Timeline</h2>
+        
+        <table class="avoid-page-break">
+            <tr>
+                <th>Phase</th>
+                <th>Duration</th>
+                <th>Key Deliverables</th>
+                <th>Your Involvement</th>
+            </tr>
+            <tr>
+                <td>Phase 1: Planning</td>
+                <td>1 week</td>
+                <td>Requirements, Design, Data setup</td>
+                <td>2 hours consultation</td>
+            </tr>
+            <tr>
+                <td>Phase 2: Development</td>
+                <td>4 weeks</td>
+                <td>Inventory & POS system development</td>
+                <td>Weekly progress review</td>
+            </tr>
+            <tr>
+                <td>Phase 3: Credit System</td>
+                <td>2 weeks</td>
+                <td>Customer & credit management module</td>
+                <td>Customer data preparation</td>
+            </tr>
+            <tr>
+                <td>Phase 4: Testing & Training</td>
+                <td>1 week</td>
+                <td>System testing, Staff training</td>
+                <td>Hands-on training sessions</td>
+            </tr>
+            <tr>
+                <td><strong>Total Project Duration</strong></td>
+                <td><strong>8 weeks</strong></td>
+                <td><strong>Complete system delivery</strong></td>
+                <td><strong>Minimal disruption</strong></td>
+            </tr>
+        </table>
+        
+        <div class="force-page-break"></div>
+        
+        <h1>7. TERMS & SUPPORT</h1>
+        
+        <div class="feature-box avoid-page-break">
+            <h3>🔧 Warranty & Support</h3>
+            <ul>
+                <li><strong>6-month warranty</strong> on all software defects</li>
+                <li><strong>Telephone/WhatsApp support</strong> during business hours</li>
+                <li><strong>Bug fixes included</strong> for 3 months post-deployment</li>
+                <li><strong>Comprehensive user guides</strong> provided</li>
+                <li><strong>Data backup system</strong> included</li>
+                <li><strong>Extended support available</strong> after 3 months (optional)</li>
+            </ul>
+        </div>
+        
+        <div class="signature-section avoid-page-break">
+            <h2>PROPOSAL ACCEPTANCE</h2>
+            <p>We hereby accept the terms outlined in this proposal and authorize Peter Okerinola to develop and implement the KleinTrack Lite system for Kleinberg Accommodation.</p>
+            
+            <div style="margin-top: 30px;">
+                <div style="float: left; width: 48%;">
+                    <strong>For Kleinberg Accommodation:</strong><br><br>
+                    Signature: ________________________<br><br>
+                    Name: ___________________________<br><br>
+                    Position: _________________________<br><br>
+                    Date: ____________________________
+                </div>
+                
+                <div style="float: right; width: 48%;">
+                    <strong>For Peter Okerinola:</strong><br><br>
+                    Signature: ________________________<br><br>
+                    Name: Peter Okerinola<br><br>
+                    Position: Software Developer<br><br>
+                    Date: ____________________________
+                </div>
+                
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+        
+        <div class="footer avoid-page-break">
+            <strong>PETER OKERINOLA | Software Developer</strong><br>
+            Email: peterokerinola@gmail.com | Phone: +27 69 876 0713<br>
+            LinkedIn: linkedin.com/in/peter-okerinola<br>
+            Based in: Langebaan, West Coast | Specializing in Retail Software Solutions<br>
+            <em>Proposal prepared January 2026 based on onsite analysis</em>
+        </div>
+    </div>
+
+    <script>
+        // Update current date
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentDate = new Date().toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+            
+            // Update date placeholders
+            const dates = document.querySelectorAll('em, .footer em');
+            dates.forEach(dateEl => {
+                if (dateEl.textContent.includes('[Date]') || dateEl.textContent.includes('January 2026')) {
+                    dateEl.textContent = dateEl.textContent.replace('January 2026', currentDate);
+                }
+            });
+            
+            // Set signature dates
+            const signatureDates = document.querySelectorAll('.signature-section div:contains("Date:")');
+            signatureDates.forEach(el => {
+                if (el.textContent.includes('Date:')) {
+                    const newHTML = el.innerHTML.replace('____________________________', currentDate);
+                    el.innerHTML = newHTML;
+                }
+            });
+        });
+
+        function showPDFInstructions() {
+            const exportControls = document.querySelector('.export-controls');
+            exportControls.style.display = 'none';
+            
+            const instructions = document.createElement('div');
+            instructions.innerHTML = `
+                <div style="
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.9);
+                    z-index: 9999;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    color: white;
+                    padding: 20px;
+                    text-align: center;
+                ">
+                    <h2>📄 PDF Export Instructions</h2>
+                    <div style="background: white; color: #333; padding: 30px; border-radius: 10px; max-width: 600px; margin: 20px;">
+                        <p><strong>For perfect PDF output:</strong></p>
+                        <ol style="text-align: left; margin: 20px 0; line-height: 1.8;">
+                            <li>Click the <strong>"Print" button</strong> below</li>
+                            <li>In print dialog, select <strong>"Save as PDF"</strong> as printer</li>
+                            <li>Click <strong>"More settings"</strong></li>
+                            <li>Set <strong>Margins: "None" or "Minimum"</strong></li>
+                            <li>Check <strong>"Background graphics"</strong></li>
+                            <li>Uncheck <strong>"Headers and footers"</strong></li>
+                            <li>Set <strong>Scale: 100%</strong></li>
+                            <li>Click <strong>"Save"</strong> and choose location</li>
+                        </ol>
+                        <p style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 5px;">
+                            <strong>Pro Tip:</strong> The page breaks are optimized for A4 printing. If you see empty pages, try setting margins to "None".
+                        </p>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <button onclick="printProposal()" style="
+                            background: #e74c3c;
+                            color: white;
+                            border: none;
+                            padding: 15px 40px;
+                            border-radius: 5px;
+                            font-size: 16px;
+                            cursor: pointer;
+                            margin: 10px;
+                            font-weight: bold;
+                        ">🖨️ Open Print Dialog</button>
+                        <button onclick="closeInstructions()" style="
+                            background: #7f8c8d;
+                            color: white;
+                            border: none;
+                            padding: 15px 40px;
+                            border-radius: 5px;
+                            font-size: 16px;
+                            cursor: pointer;
+                            margin: 10px;
+                        ">✖️ Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            instructions.id = 'export-instructions';
+            document.body.appendChild(instructions);
+        }
+
+        function closeInstructions() {
+            const instructions = document.getElementById('export-instructions');
+            if (instructions) {
+                document.body.removeChild(instructions);
+            }
+            const exportControls = document.querySelector('.export-controls');
+            if (exportControls) {
+                exportControls.style.display = 'flex';
+            }
+        }
+
+        function exportToWord() {
+            try {
+                // Get clean content with CSS charts
+                const content = document.querySelector('.page-container').innerHTML;
+                
+                const cleanContent = content
+                    .replace(/<div class="export-controls.*?<\/div>/gs, '')
+                    .replace(/onclick=".*?"/g, '')
+                    .replace(/<script>.*?<\/script>/gs, '');
+                
+                // Create Word document with embedded CSS
+                const blob = new Blob([`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>KleinTrack Lite Proposal - Kleinberg Accommodation</title>
+                        <style>
+                            body {
+                                font-family: Arial, sans-serif;
+                                line-height: 1.5;
+                                margin: 40px;
+                                color: #333;
+                            }
+                            h1 {
+                                color: #2c3e50;
+                                border-bottom: 2px solid #3498db;
+                                padding-bottom: 10px;
+                                margin-top: 40px;
+                            }
+                            h2 {
+                                color: #3498db;
+                                margin-top: 30px;
+                            }
+                            h3 {
+                                color: #555;
+                                margin-top: 20px;
+                            }
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin: 20px 0;
+                                font-size: 11pt;
+                            }
+                            th, td {
+                                border: 1px solid #ddd;
+                                padding: 10px;
+                                text-align: left;
+                            }
+                            th {
+                                background-color: #2c3e50;
+                                color: white;
+                            }
+                            .highlight-box, .financial-box, .feature-box {
+                                padding: 15px;
+                                margin: 15px 0;
+                                border-left: 4px solid;
+                                background: #f8f9fa;
+                            }
+                            /* CSS Charts for Word */
+                            .simple-chart {
+                                margin: 20px 0;
+                                background: #f8f9fa;
+                                padding: 20px;
+                                border: 1px solid #ddd;
+                            }
+                            .chart-row {
+                                display: flex;
+                                align-items: center;
+                                margin: 15px 0;
+                            }
+                            .chart-label {
+                                width: 200px;
+                                font-size: 14px;
+                                color: #2c3e50;
+                                text-align: right;
+                                padding-right: 15px;
+                            }
+                            .chart-bar-container {
+                                flex: 1;
+                                height: 30px;
+                                background: #e0e0e0;
+                                border-radius: 4px;
+                                overflow: hidden;
+                                position: relative;
+                            }
+                            .chart-bar {
+                                height: 100%;
+                                border-radius: 4px;
+                                position: relative;
+                            }
+                            .chart-value {
+                                position: absolute;
+                                right: 10px;
+                                top: 50%;
+                                transform: translateY(-50%);
+                                color: #2c3e50;
+                                font-weight: bold;
+                                z-index: 2;
+                            }
+                            .bar-blue { background: #3498db; }
+                            .bar-green { background: #2ecc71; }
+                            .bar-red { background: #e74c3c; }
+                            .bar-orange { background: #f39c12; }
+                            .bar-purple { background: #9b59b6; }
+                            .bar-teal { background: #1abc9c; }
+                        </style>
+                    </head>
+                    <body>
+                        ${cleanContent}
+                    </body>
+                    </html>
+                `], { type: 'application/msword' });
+                
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'KleinTrack-Proposal-Kleinberg-Accommodation-2026.doc';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+            } catch (error) {
+                console.error('Word Export Error:', error);
+                alert('Error generating Word document. Please try the PDF method.');
+            }
+        }
+
+        function exportToPowerPoint() {
+            try {
+                const content = document.querySelector('.page-container').innerHTML;
+                
+                // Extract text content for PowerPoint
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = content;
+                
+                // Remove unwanted elements
+                const elementsToRemove = tempDiv.querySelectorAll('.export-controls, script, style');
+                elementsToRemove.forEach(el => el.remove());
+                
+                const textContent = tempDiv.innerText;
+                
+                // Create PowerPoint outline
+                const pptContent = `
+KLEINTRACK LITE - SYSTEM PROPOSAL
+For Kleinberg Accommodation
+Prepared by Peter Okerinola, Software Developer
+January 2026
+
+SLIDE 1: EXECUTIVE SUMMARY
+- Multiple revenue losses: R148,987 annually
+- Shop's critical role in guest accommodation experience
+- Software Investment: R30,000 (one-time)
+- Hardware: Optional R5,718.79 (or use existing PC)
+- Payback period: 3.6 months (software only)
+- Annual ROI: 330%
+- Every R1 invested returns R4.30 in first year
+
+SLIDE 2: REVENUE LOSS BREAKDOWN
+1. Credit Loss: R55,987/year (37.6%)
+2. Price Errors: R18,000/year (12.1%)
+3. Theft & Shrinkage: R24,000/year (16.1%)
+4. Stock-outs: R27,000/year (18.1%)
+5. Return Mismanagement: R9,000/year
+6. Inefficient Stock: R15,000/year
+Total Loss: R148,987 annually
+
+SLIDE 3: SYSTEM IMPACT
+- Current Annual Loss: R148,987
+- With System: R49,807
+- Reduction: 66.6% (R99,180 annual savings)
+- Monthly Working Capital: +19.1%
+- Annual Revenue Growth: +13.3%
+- Annual Recovery: R99,180 from Month 8
+
+SLIDE 4: REVENUE PROJECTION
+- Current: R746,496 annually
+- Year 1: R845,676 (+13.3%)
+- Year 2: R945,016 (+26.6%)
+Growth from: Credit recovery, price error elimination, theft reduction, stock optimization
+
+SLIDE 5: INVESTMENT DETAILS
+- Software Package: R30,000 (incl. VAT)
+- Includes: Inventory, POS, Credit Management, Reports, Training, Support
+- Hardware: Optional R5,718.79 package (or use existing PC)
+- Payment: 50% start, 30% demo, 20% completion
+- Total with hardware: R35,718.79
+
+SLIDE 6: VS GENERIC POS SYSTEMS
+Generic POS (R300-500/month):
+- Ongoing costs forever (R29,305 over 5 years)
+- Internet required
+- No farm worker credit system
+- Call center support
+- Your data on their servers
+
+KleinTrack Lite (R30,000 once):
+- No monthly fees ever
+- Works offline
+- Custom credit management
+- Local Langebaan support
+- Your data stays with you
+
+SLIDE 7: 5-YEAR COST COMPARISON
+Generic POS: R29,305 spent, no assets after 5 years
+KleinTrack Lite: R30,000 spent, own system worth R30,000 + R495,900 saved
+
+SLIDE 8: IMPLEMENTATION
+- Phase 1 (1 week): Planning & Design
+- Phase 2 (4 weeks): Core Development
+- Phase 3 (2 weeks): Credit System
+- Phase 4 (1 week): Testing & Training
+Total: 8 weeks
+
+SLIDE 9: SUPPORT & WARRANTY
+- 6-month software warranty
+- Telephone/WhatsApp support
+- Bug fixes included for 3 months
+- Comprehensive user guides
+- Data backup system included
+- Local Langebaan support
+
+SLIDE 10: CONTACT
+Peter Okerinola, Software Developer
+Email: peterokerinola@gmail.com
+Phone: +27 69 876 0713
+LinkedIn: linkedin.com/in/peter-okerinola
+Based in Langebaan, West Coast
+Specializing in Retail Software Solutions
+                `;
+                
+                const blob = new Blob([pptContent], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'KleinTrack-Proposal-PowerPoint-Outline.txt';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                alert('PowerPoint outline downloaded as text file. Copy content into PowerPoint slides.');
+                
+            } catch (error) {
+                console.error('PowerPoint Export Error:', error);
+                alert('Error generating PowerPoint outline. Please copy content manually.');
+            }
+        }
+
+        function printProposal() {
+            closeInstructions();
+            window.print();
+        }
+    </script>
+</body>
+</html>
